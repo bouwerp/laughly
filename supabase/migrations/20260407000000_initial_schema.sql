@@ -50,3 +50,18 @@ CREATE POLICY "Users can update own jokes." ON jokes
 
 CREATE POLICY "Users can delete own jokes." ON jokes
   FOR DELETE USING (auth.uid() = user_id);
+
+-- Create storage bucket for media
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('media', 'media', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- Storage policies for media bucket
+CREATE POLICY "Public Access" ON storage.objects 
+  FOR SELECT USING (bucket_id = 'media');
+
+CREATE POLICY "Authenticated users can upload media" ON storage.objects 
+  FOR INSERT WITH CHECK (bucket_id = 'media' AND auth.role() = 'authenticated');
+
+CREATE POLICY "Users can delete own media" ON storage.objects 
+  FOR DELETE USING (bucket_id = 'media' AND auth.uid() = (storage.foldername(name))[1]::uuid);

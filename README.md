@@ -56,16 +56,29 @@ Laughly is evolving from a personal database into a robust social platform:
 Laughly is built with a **Platform Agnostic** mindset. By utilizing **Interface Segregation** and **Dependency Injection**, the core business logic is entirely decoupled from specific providers (like Supabase). This allows for effortless switching of infrastructure (e.g., to AWS or Firebase) without refactoring the application's domain layer.
 
 ---
-
 ## 🏁 Getting Started
 
 ### Prerequisites
 - Node.js 20+
+- Docker (for local Supabase instance)
+- Supabase CLI: `npm install supabase --save-dev`
 - Expo Go or a Development Build
-- Supabase Account (for backend services)
 
-### Installation
+### Local Development (Recommended)
+Laughly is designed to run end-to-end on your local machine using Docker:
+
+1.  **Initialize Supabase:** `npm run supabase:start`
+    - This will start the local database, auth, and storage services.
+    - Note: The first run may take a few minutes to download Docker images.
+2.  **Configure Environment:**
+    - Copy `.env.example` to `.env`.
+    - Update `EXPO_PUBLIC_SUPABASE_ANON_KEY` with the `anon key` provided by `npm run supabase:status`.
+3.  **Start the App:** `npm run dev` (starts both Supabase and Expo) or `npm start`.
+
+### Production/Cloud Setup
 1. Clone the repository: `git clone https://github.com/bouwerp/laughly.git`
+...
+
 2. Install dependencies: `npm install --legacy-peer-deps`
 3. Configure environment variables in `.env`:
    - `EXPO_PUBLIC_SUPABASE_URL`

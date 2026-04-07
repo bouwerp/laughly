@@ -73,6 +73,13 @@ laughly/
 - [x] Set up **Supabase** as the initial infrastructure provider via adapters.
 - [x] Initialize **EAS Build** configuration.
 
+### Phase 1.2: Local Development Setup (End-to-End Local)
+- [ ] **Supabase Local Dev:** Initialize and start Supabase locally using the CLI (`supabase start`).
+- [ ] **Local Environment:** Create a `.env` template for local development pointing to `127.0.0.1:54321`.
+- [ ] **Seed Data:** Create a `supabase/seed.sql` to populate the local DB for testing.
+- [ ] **Storage Initialization:** Automate the creation of the `media` bucket in the local Supabase instance.
+- [ ] **Local Testing Workflow:** Add npm scripts to start the local backend and Expo app in tandem.
+
 ### Phase 1.5: CI/CD & Deployment Workflows (Automated Delivery)
 - [x] Set up **GitHub Actions** for automated workflows on push to `main`.
 - [x] **Backend Deployment:** Automate Supabase Edge Functions deployment.
