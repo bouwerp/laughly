@@ -6,7 +6,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { Stack } from 'expo-router';
 
-export default function SettingsScreen() {
+export default function Settings() {
   const { session, signOut } = useAuth();
   const { jokes } = useJokes();
 

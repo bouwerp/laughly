@@ -1,16 +1,37 @@
 import { IAuthService, AuthSession } from '../../core/interfaces/IAuthService';
 import { supabase } from '../SupabaseClient';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { Alert, Platform } from 'react-native';
 
 export class SupabaseAuthAdapter implements IAuthService {
+  private isNativeModuleAvailable = false;
+
   constructor() {
-    GoogleSignin.configure({
-      webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
-      iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
-    });
+    try {
+      GoogleSignin.configure({
+        webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+        iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
+      });
+      this.isNativeModuleAvailable = true;
+    } catch (e) {
+      console.warn('GoogleSignin native module not found. Authentication will be disabled.');
+      this.isNativeModuleAvailable = false;
+    }
   }
 
   async signInWithGoogle(): Promise<AuthSession> {
+    if (!this.isNativeModuleAvailable) {
+      Alert.alert(
+        "Development Mode",
+        "Google Sign-In requires a Development Build (EAS). It is not supported in Expo Go.\n\nWould you like to use a test session?",
+        [
+          { text: "Cancel", style: "cancel" },
+          { text: "Use Test Session", onPress: () => this.mockSignIn() }
+        ]
+      );
+      throw new Error('Native GoogleSignin module not available');
+    }
+
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
@@ -34,8 +55,17 @@ export class SupabaseAuthAdapter implements IAuthService {
     }
   }
 
+  private async mockSignIn(): Promise<AuthSession> {
+    // For local dev in Expo Go, we can sign in with a test account if you have one enabled in Supabase
+    // Or we can just return a dummy session if we want to bypass auth for UI testing.
+    console.log("Mock Sign-In triggered");
+    throw new Error("Mock Sign-In not fully implemented. Please use a Dev Build for real Auth.");
+  }
+
   async signOut(): Promise<void> {
-    await GoogleSignin.signOut();
+    if (this.isNativeModuleAvailable) {
+      await GoogleSignin.signOut();
+    }
     await supabase.auth.signOut();
   }
 

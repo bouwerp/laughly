@@ -6,7 +6,7 @@ import { MediaCard } from '../../components/database/MediaCard';
 import { Stack } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 
-export default function FeedScreen() {
+export default function Index() {
   const { jokes, isLoading, refetch } = useJokes();
   const [searchQuery, setSearchQuery] = useState('');
 
