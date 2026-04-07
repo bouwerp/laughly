@@ -37,6 +37,36 @@
         {
           "iosImageUrl": "https://example.com/icon.png"
         }
+      ],
+      [
+        "expo-share-intent",
+        {
+          "ios": {
+            "activationRules": ["https://*", "http://*", "*.png", "*.jpg", "*.jpeg", "*.mp4"]
+          },
+          "android": {
+            "intentFilters": [
+              {
+                "action": "SEND",
+                "data": {
+                  "mimeType": "image/*"
+                }
+              },
+              {
+                "action": "SEND",
+                "data": {
+                  "mimeType": "video/*"
+                }
+              },
+              {
+                "action": "SEND",
+                "data": {
+                  "mimeType": "text/plain"
+                }
+              }
+            ]
+          }
+        }
       ]
     ],
     "experiments": {
