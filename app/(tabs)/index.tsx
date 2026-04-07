@@ -1,31 +1,58 @@
-import { StyleSheet } from 'react-native';
+import React from 'react';
+import { View, Text, ActivityIndicator, RefreshControl } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
+import { useJokes } from '../../hooks/useJokes';
+import { MediaCard } from '../../components/database/MediaCard';
+import { Stack } from 'expo-router';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+export default function FeedScreen() {
+  const { jokes, isLoading, refetch } = useJokes();
 
-export default function TabOneScreen() {
+  if (isLoading && !jokes) {
+    return (
+      <View className="flex-1 items-center justify-center bg-gray-50">
+        <ActivityIndicator size="large" color="#000" />
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
+    <View className="flex-1 bg-gray-50">
+      <Stack.Screen 
+        options={{ 
+          title: 'My Database',
+          headerLargeTitle: true,
+          headerShadowVisible: false,
+          headerStyle: { backgroundColor: '#f9fafb' },
+        }} 
+      />
+      
+      {jokes && jokes.length > 0 ? (
+        <FlashList
+          data={jokes}
+          renderItem={({ item }) => <MediaCard joke={item} />}
+          estimatedItemSize={400}
+          contentContainerStyle={{ padding: 16 }}
+          refreshControl={
+            <RefreshControl refreshing={isLoading} onRefresh={refetch} />
+          }
+          ListHeaderComponent={
+            <View className="mb-4">
+              <Text className="text-gray-500">Your curated collection of humor.</Text>
+            </View>
+          }
+        />
+      ) : (
+        <View className="flex-1 items-center justify-center p-8">
+          <View className="w-20 h-20 bg-gray-200 rounded-full items-center justify-center mb-4">
+            <Text className="text-4xl">📭</Text>
+          </View>
+          <Text className="text-xl font-bold text-gray-900 text-center">Your database is empty</Text>
+          <Text className="text-gray-500 text-center mt-2">
+            Start saving jokes by uploading them or sharing from other apps!
+          </Text>
+        </View>
+      )}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});

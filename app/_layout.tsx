@@ -23,6 +23,9 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 import { AuthProvider, useAuth } from '../hooks/useAuth';
 import { useRouter, useSegments, Stack } from 'expo-router';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 // Root Layout Component
 export default function RootLayout() {
@@ -47,9 +50,11 @@ export default function RootLayout() {
   }
 
   return (
-    <AuthProvider>
-      <RootLayoutNav />
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <RootLayoutNav />
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
 
