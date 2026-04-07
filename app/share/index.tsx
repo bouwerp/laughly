@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, ActivityIndicator, Alert, ScrollView } from 'react-native';
 import { useShareIntent } from 'expo-share-intent';
 import { Image } from 'expo-image';
 import { useVideoPlayer, VideoView } from 'expo-video';
@@ -17,6 +17,7 @@ export default function ShareIntentScreen() {
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [tags, setTags] = useState('');
   const [isUploading, setIsUploading] = useState(false);
 
   // Video preview player
@@ -54,6 +55,7 @@ export default function ShareIntentScreen() {
         user_id: session.user.id,
         title: title || "Shared via Laughly",
         description,
+        tags: tags ? tags.split(',').map(t => t.trim().toLowerCase()).filter(t => t !== '') : [],
         media_path: filePath,
         media_type: shareIntent.type === 'video' ? 'video' : 'image',
       });
@@ -94,55 +96,63 @@ export default function ShareIntentScreen() {
   }
 
   return (
-    <View className="flex-1 bg-white p-6 justify-center">
-      <View className="items-center mb-8">
-        <Text className="text-2xl font-bold text-gray-900">Save to Laughly</Text>
-        <Text className="text-gray-500 mt-1">Add this to your funny collection</Text>
-      </View>
+    <ScrollView className="flex-1 bg-white">
+      <View className="p-6">
+        <View className="items-center mb-8">
+          <Text className="text-2xl font-bold text-gray-900">Save to Laughly</Text>
+          <Text className="text-gray-500 mt-1">Add this to your funny collection</Text>
+        </View>
 
-      {/* Preview */}
-      <View className="aspect-square bg-gray-100 rounded-3xl overflow-hidden mb-6">
-        {shareIntent.type === 'video' && player ? (
-          <VideoView player={player} style={{ width: '100%', height: '100%' }} contentFit="cover" />
-        ) : (
-          <Image source={shareIntent.value} style={{ width: '100%', height: '100%' }} contentFit="cover" />
-        )}
-      </View>
+        {/* Preview */}
+        <View className="aspect-square bg-gray-100 rounded-3xl overflow-hidden mb-6">
+          {shareIntent.type === 'video' && player ? (
+            <VideoView player={player} style={{ width: '100%', height: '100%' }} contentFit="cover" />
+          ) : (
+            <Image source={shareIntent.value} style={{ width: '100%', height: '100%' }} contentFit="cover" />
+          )}
+        </View>
 
-      {/* Form */}
-      <View className="space-y-4">
-        <TextInput
-          className="bg-gray-50 p-4 rounded-xl border border-gray-100"
-          placeholder="Joke Title"
-          value={title}
-          onChangeText={setTitle}
-        />
-        <TextInput
-          className="bg-gray-50 p-4 rounded-xl border border-gray-100 min-h-[80px]"
-          placeholder="Description (Optional)"
-          multiline
-          value={description}
-          onChangeText={setDescription}
-        />
-      </View>
+        {/* Form */}
+        <View className="space-y-4">
+          <TextInput
+            className="bg-gray-50 p-4 rounded-xl border border-gray-100"
+            placeholder="Joke Title"
+            value={title}
+            onChangeText={setTitle}
+          />
+          <TextInput
+            className="bg-gray-50 p-4 rounded-xl border border-gray-100 min-h-[80px]"
+            placeholder="Description (Optional)"
+            multiline
+            value={description}
+            onChangeText={setDescription}
+          />
+          <TextInput
+            className="bg-gray-50 p-4 rounded-xl border border-gray-100"
+            placeholder="Tags (comma separated)"
+            value={tags}
+            onChangeText={setTags}
+          />
+        </View>
 
-      {/* Buttons */}
-      <View className="flex-row space-x-4 mt-8">
-        <TouchableOpacity 
-          onPress={() => { resetShareIntent(); router.replace('/(tabs)'); }}
-          className="flex-1 bg-gray-100 py-4 rounded-xl items-center"
-        >
-          <Text className="text-gray-600 font-bold">Cancel</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          onPress={handleSave}
-          disabled={isUploading}
-          className="flex-1 bg-yellow-400 py-4 rounded-xl items-center"
-        >
-          {isUploading ? <ActivityIndicator color="black" /> : <Text className="text-black font-bold">Save Joke</Text>}
-        </TouchableOpacity>
+        {/* Buttons */}
+        <View className="flex-row space-x-4 mt-8">
+          <TouchableOpacity 
+            onPress={() => { resetShareIntent(); router.replace('/(tabs)'); }}
+            className="flex-1 bg-gray-100 py-4 rounded-xl items-center"
+          >
+            <Text className="text-gray-600 font-bold">Cancel</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            onPress={handleSave}
+            disabled={isUploading}
+            className="flex-1 bg-yellow-400 py-4 rounded-xl items-center"
+          >
+            {isUploading ? <ActivityIndicator color="black" /> : <Text className="text-black font-bold">Save Joke</Text>}
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }

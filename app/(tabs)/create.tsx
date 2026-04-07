@@ -17,6 +17,7 @@ export default function CreateScreen() {
   const [media, setMedia] = useState<ImagePicker.ImagePickerAsset | null>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [tags, setTags] = useState('');
   const [isUploading, setIsUploading] = useState(false);
 
   // Video preview player
@@ -59,6 +60,7 @@ export default function CreateScreen() {
         user_id: session.user.id,
         title,
         description,
+        tags: tags ? tags.split(',').map(t => t.trim().toLowerCase()).filter(t => t !== '') : [],
         media_path: filePath,
         media_type: media.type === 'video' ? 'video' : 'image',
         metadata: {
@@ -125,6 +127,16 @@ export default function CreateScreen() {
               textAlignVertical="top"
               value={description}
               onChangeText={setDescription}
+            />
+          </View>
+
+          <View>
+            <Text className="text-sm font-semibold text-gray-700 mb-2">Tags (comma separated)</Text>
+            <TextInput
+              className="bg-gray-50 p-4 rounded-xl text-gray-900 border border-gray-100"
+              placeholder="meme, cats, work, ..."
+              value={tags}
+              onChangeText={setTags}
             />
           </View>
         </View>
