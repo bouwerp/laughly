@@ -74,32 +74,34 @@ laughly/
 - [x] Initialize **EAS Build** configuration.
 
 ### Phase 1.5: CI/CD & Deployment Workflows (Automated Delivery)
-- [ ] Set up **GitHub Actions** for automated workflows on push to `main`.
-- [ ] **Backend Deployment:** Automate Supabase Edge Functions deployment.
-- [ ] **Database Migrations:** Integrate Supabase CLI into CI/CD for automated schema updates.
-- [ ] **Mobile Builds:** Configure EAS GitHub Action to trigger "Preview" builds for Android and iOS.
-- [ ] **Environment Secrets:** Securely manage `SUPABASE_ACCESS_TOKEN`, `EXPO_TOKEN`, and other keys in GitHub Secrets.
+- [x] Set up **GitHub Actions** for automated workflows on push to `main`.
+- [x] **Backend Deployment:** Automate Supabase Edge Functions deployment.
+- [x] **Database Migrations:** Integrate Supabase CLI into CI/CD for automated schema updates.
+- [x] **Mobile Builds:** Configure EAS GitHub Action to trigger "Preview" builds for Android and iOS.
+- [x] **Environment Secrets:** Securely manage `SUPABASE_ACCESS_TOKEN`, `EXPO_TOKEN`, and other keys in GitHub Secrets.
 
 ### Phase 2: Authentication & Security (Abstracted)
-- [ ] Implement `SupabaseAuthAdapter` for Native Apple and Google Sign-In.
-- [ ] Set up session management using the `IAuthService` interface.
-- [ ] Implement Protected Routes (UI Layer).
+- [x] Implement `SupabaseAuthAdapter` for Native Apple and Google Sign-In.
+- [x] Set up session management using the `IAuthService` interface.
+- [x] Implement Protected Routes (UI Layer).
 
 ### Phase 3: The Personal Database (Feed)
-- [ ] Build the main database view with `FlashList`.
-- [ ] Implement the feed logic (ordering by latest) via `IDatabaseService`.
-- [ ] Implement `MediaCard` consuming `IStorageService` for signed URLs.
+- [x] Build the main database view with `FlashList` for high performance.
+- [x] Implement the feed logic: initially show all content, ordered by latest.
+- [x] Implement `MediaCard` with `expo-video` and `expo-image`.
+- [x] Create basic "Delete" and "Favorite" actions for saved items.
 
 ### Phase 4: Sharing & Uploading (Core Value)
-- [ ] **Native Share Intent:** Configure system share sheet integration.
-- [ ] Implement the `share/` route using the storage and database abstractions.
-- [ ] Integrate media persistence via `IStorageService`.
+- [x] **Native Share Intent:** Configure system share sheet integration.
+- [x] Implement the `share/` route for incoming media.
+- [x] Integrate Supabase Storage for media persistence.
 
 ### Phase 5: Organization & Search
-- [ ] Add basic tagging and search functionality to the domain entities and DB adapters.
+- [x] Add basic tagging and search functionality.
 
 ### Phase 6: Polishing & Performance
-- [ ] Optimize media caching and add haptic feedback.
+- [x] Optimize media caching and add haptic feedback.
+- [x] Implement Profile screen with stats.
 
 ### Phase 7: AI Moderation (Roadmap)
 - [ ] Define `IModerationService` and integrate into the upload use-case.
