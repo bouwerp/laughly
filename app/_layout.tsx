@@ -2,12 +2,15 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import '../global.css';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { useRouter, useSegments, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useShareIntent } from 'expo-share-intent';
 
 import { useColorScheme } from '@/components/useColorScheme';
+import { AuthProvider, useAuth } from '../hooks/useAuth';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -21,10 +24,6 @@ export const unstable_settings = {
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
-import { AuthProvider, useAuth } from '../hooks/useAuth';
-import { useRouter, useSegments, Stack } from 'expo-router';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useShareIntent } from 'expo-share-intent';
 
 const queryClient = new QueryClient();
 
@@ -99,4 +98,3 @@ function RootLayoutNav() {
     </ThemeProvider>
   );
 }
-
