@@ -12,7 +12,7 @@ Laughly has been transformed into a fully functional, high-performance "Personal
 - **Phase 1 (Setup):** Expo Router initialized, NativeWind v4 configured, core abstractions defined.
 - **Phase 1.2 (Local Dev):** Docker-based Supabase local development environment enabled via CLI.
 - **Phase 1.5 (CI/CD):** GitHub Actions for Supabase deployments and EAS mobile builds.
-- **Phase 2 (Auth):** Native Google/Apple Sign-In with SecureStore persistence.
+- **Phase 2 (Auth):** Native Google Sign-In with SecureStore persistence. (Apple Auth removed for simplicity).
 - **Phase 3 (Feed):** High-performance infinite-scrolling feed with `expo-video` and `expo-image`.
 - **Phase 4 (Upload/Share):** Manual media uploads and native system share intent integration.
 - **Phase 5 (Search/Tags):** Reactive search and multi-tag categorization.
@@ -23,7 +23,7 @@ Laughly has been transformed into a fully functional, high-performance "Personal
 ## 🏗 Key Architectural Decisions
 - **Platform Agnostic Core:** All external services (Auth, DB, Storage) are accessed via interfaces (`IAuthService`, etc.).
 - **Supabase Adapters:** Initial infrastructure implemented using Supabase but easily swappable via DI.
-- **Unified Native Auth:** Uses native ID tokens for both Google and Apple, avoiding web-based redirects.
+- **Unified Native Auth:** Uses native ID tokens for Google, avoiding web-based redirects.
 - **Local-First Backend:** Local dev utilizes Supabase Docker containers, synchronized with cloud schema.
 
 ---

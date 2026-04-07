@@ -1,8 +1,6 @@
 import { IAuthService, AuthSession } from '../../core/interfaces/IAuthService';
 import { supabase } from '../SupabaseClient';
-import * as AppleAuthentication from 'expo-apple-authentication';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { NonceHelper } from '../../utils/NonceHelper';
 
 export class SupabaseAuthAdapter implements IAuthService {
   constructor() {
@@ -32,39 +30,6 @@ export class SupabaseAuthAdapter implements IAuthService {
       return this.mapSession(data.session);
     } catch (error) {
       console.error('Google Sign-In Error:', error);
-      throw error;
-    }
-  }
-
-  async signInWithApple(): Promise<AuthSession> {
-    try {
-      const rawNonce = NonceHelper.generateRawNonce();
-      const hashedNonce = await NonceHelper.hashNonce(rawNonce);
-
-      const appleCredential = await AppleAuthentication.signInAsync({
-        requestedScopes: [
-          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-          AppleAuthentication.AppleAuthenticationScope.EMAIL,
-        ],
-        nonce: hashedNonce,
-      });
-
-      if (!appleCredential.identityToken) {
-        throw new Error('No identity token present from Apple Sign-In.');
-      }
-
-      const { data, error } = await supabase.auth.signInWithIdToken({
-        provider: 'apple',
-        token: appleCredential.identityToken,
-        nonce: rawNonce,
-      });
-
-      if (error) throw error;
-      if (!data.session) throw new Error('No session returned after Apple Sign-In.');
-
-      return this.mapSession(data.session);
-    } catch (error) {
-      console.error('Apple Sign-In Error:', error);
       throw error;
     }
   }

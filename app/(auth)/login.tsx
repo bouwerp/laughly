@@ -4,19 +4,11 @@ import { useAuth } from '../../hooks/useAuth';
 import { FontAwesome } from '@expo/vector-icons';
 
 export default function LoginScreen() {
-  const { signInWithGoogle, signInWithApple, isLoading } = useAuth();
+  const { signInWithGoogle, isLoading } = useAuth();
 
   const handleGoogleSignIn = async () => {
     try {
       await signInWithGoogle();
-    } catch (error) {
-      // Error is logged in the hook
-    }
-  };
-
-  const handleAppleSignIn = async () => {
-    try {
-      await signInWithApple();
     } catch (error) {
       // Error is logged in the hook
     }
@@ -43,16 +35,6 @@ export default function LoginScreen() {
       </View>
 
       <View className="space-y-4">
-        <TouchableOpacity
-          onPress={handleAppleSignIn}
-          className="flex-row items-center justify-center bg-black py-4 rounded-xl px-4"
-        >
-          <FontAwesome name="apple" size={20} color="white" />
-          <Text className="text-white font-semibold ml-3 text-lg">
-            Sign in with Apple
-          </Text>
-        </TouchableOpacity>
-
         <TouchableOpacity
           onPress={handleGoogleSignIn}
           className="flex-row items-center justify-center bg-white border border-gray-200 py-4 rounded-xl px-4 shadow-sm"

@@ -41,7 +41,7 @@ To ensure long-term flexibility and maintainability, the project adheres to the 
 - **Hosting (Serverless REST):** Supabase Edge Functions.
 - **Database:** Supabase PostgreSQL.
 - **Content Server (Media Hosting):** Supabase Storage (CDN backed).
-- **Authentication:** Supabase Auth (Managed Google/Apple sessions).
+- **Authentication:** Supabase Auth (Managed Google sessions).
 
 ### DevOps & Tools
 - **Build & Deployment:** [Expo Application Services (EAS)](https://expo.dev/eas).
@@ -75,11 +75,11 @@ laughly/
 - [x] Initialize **EAS Build** configuration.
 
 ### Phase 1.2: Local Development Setup (End-to-End Local)
-- [ ] **Supabase Local Dev:** Initialize and start Supabase locally using the CLI (`supabase start`).
-- [ ] **Local Environment:** Create a `.env` template for local development pointing to `127.0.0.1:54321`.
-- [ ] **Seed Data:** Create a `supabase/seed.sql` to populate the local DB for testing.
-- [ ] **Storage Initialization:** Automate the creation of the `media` bucket in the local Supabase instance.
-- [ ] **Local Testing Workflow:** Add npm scripts to start the local backend and Expo app in tandem.
+- [x] **Supabase Local Dev:** Initialize and start Supabase locally using the CLI (`supabase start`).
+- [x] **Local Environment:** Create a `.env` template for local development pointing to `127.0.0.1:54321`.
+- [x] **Seed Data:** Create a `supabase/seed.sql` to populate the local DB for testing.
+- [x] **Storage Initialization:** Automate the creation of the `media` bucket in the local Supabase instance.
+- [x] **Local Testing Workflow:** Add npm scripts to start the local backend and Expo app in tandem.
 
 ### Phase 1.5: CI/CD & Deployment Workflows (Automated Delivery)
 - [x] Set up **GitHub Actions** for automated workflows on push to `main`.
@@ -89,7 +89,7 @@ laughly/
 - [x] **Environment Secrets:** Securely manage `SUPABASE_ACCESS_TOKEN`, `EXPO_TOKEN`, and other keys in GitHub Secrets.
 
 ### Phase 2: Authentication & Security (Abstracted)
-- [x] Implement `SupabaseAuthAdapter` for Native Apple and Google Sign-In.
+- [x] Implement `SupabaseAuthAdapter` for Native Google Sign-In.
 - [x] Set up session management using the `IAuthService` interface.
 - [x] Implement Protected Routes (UI Layer).
 

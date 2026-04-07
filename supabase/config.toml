@@ -33,6 +33,4 @@ secret = "env(GOOGLE_CLIENT_SECRET)"
 redirect_uri = "http://localhost:54321/auth/v1/callback"
 
 [auth.external.apple]
-enabled = true
-client_id = "env(APPLE_CLIENT_ID)"
-secret = "env(APPLE_CLIENT_SECRET)"
+enabled = false

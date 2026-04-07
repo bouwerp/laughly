@@ -11,7 +11,7 @@ Built with **Expo (React Native)** and **Supabase**, Laughly offers a seamless e
 We have successfully established the foundational core of Laughly, focusing on a robust "Personal Database" experience. The app is fully functional with native authentication, high-performance media playback, and deep system integration.
 
 ### ✅ Supported Features
-- **Native Authentication:** Seamless, secure sign-in with **Google** and **Apple** via native ID Token flows (Supabase Auth).
+- **Native Authentication:** Seamless, secure sign-in with **Google** via native ID Token flows (Supabase Auth).
 - **Personal Joke Database:** A fluid, infinite-scrolling feed of your saved memes and videos using `@shopify/flash-list`.
 - **Elite Media Playback:** High-performance rendering for images (`expo-image`) and videos (`expo-video`) with built-in caching and auto-play.
 - **"Share to Laughly" (Native):** Save content directly from Safari, Photos, Instagram, or other apps using the system share sheet (`expo-share-intent`).
@@ -77,8 +77,6 @@ Laughly is designed to run end-to-end on your local machine using Docker:
 
 ### Production/Cloud Setup
 1. Clone the repository: `git clone https://github.com/bouwerp/laughly.git`
-...
-
 2. Install dependencies: `npm install --legacy-peer-deps`
 3. Configure environment variables in `.env`:
    - `EXPO_PUBLIC_SUPABASE_URL`

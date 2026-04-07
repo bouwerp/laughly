@@ -6,7 +6,6 @@ interface AuthContextType {
   session: AuthSession | null;
   isLoading: boolean;
   signInWithGoogle: () => Promise<void>;
-  signInWithApple: () => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -40,15 +39,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const signInWithApple = async () => {
-    try {
-      await services.authService.signInWithApple();
-    } catch (error) {
-      console.error('Sign in with Apple failed', error);
-      throw error;
-    }
-  };
-
   const signOut = async () => {
     try {
       await services.authService.signOut();
@@ -58,7 +48,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ session, isLoading, signInWithGoogle, signInWithApple, signOut }}>
+    <AuthContext.Provider value={{ session, isLoading, signInWithGoogle, signOut }}>
       {children}
     </AuthContext.Provider>
   );
