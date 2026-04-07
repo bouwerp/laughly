@@ -14,6 +14,7 @@ To ensure long-term flexibility and maintainability, the project adheres to the 
 - **Interface Segregation:** All external services (Auth, Storage, Database, AI) must be accessed through well-defined interfaces.
 - **Dependency Injection:** Service implementations are injected into the application at the highest level possible, allowing for effortless provider switching.
 - **Adapter Pattern:** Use adapters to wrap provider-specific SDKs (e.g., Supabase, Firebase) to match the application's internal interfaces.
+- **Session Continuity:** Maintain a `SESSION_CONTEXT.md` file in the root directory, providing a condensed, up-to-date summary of the project's state, recent changes, and next steps to ensure seamless context transitions.
 
 ## 3. Key Features (Initial Release Focus)
 - **Personal Joke Database:** A private, infinite-scrolling collection of the user's saved memes and videos.
