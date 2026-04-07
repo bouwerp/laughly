@@ -19,6 +19,7 @@ export default function CreateScreen() {
   const [description, setDescription] = useState('');
   const [tags, setTags] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   // Video preview player
   const player = (media?.type === 'video' && media.uri) ? useVideoPlayer(media.uri, (player) => {
@@ -43,17 +44,24 @@ export default function CreateScreen() {
 
     try {
       setIsUploading(true);
+      setUploadProgress(0);
       
       const fileExt = media.uri.split('.').pop();
       const fileName = `${Math.random()}.${fileExt}`;
       const filePath = `${session.user.id}/${fileName}`;
 
-      // 1. Upload to Storage
-      await services.storageService.uploadFile(media.uri, {
-        bucket: 'media',
-        path: filePath,
-        contentType: media.type === 'video' ? 'video/mp4' : 'image/jpeg',
-      });
+      // 1. Upload to Storage with progress
+      await services.storageService.uploadFile(
+        media.uri, 
+        {
+          bucket: 'media',
+          path: filePath,
+          contentType: media.type === 'video' ? 'video/mp4' : 'image/jpeg',
+        },
+        (progress) => {
+          setUploadProgress(progress);
+        }
+      );
 
       // 2. Save to Database
       await services.databaseService.insert('jokes', {
@@ -79,6 +87,7 @@ export default function CreateScreen() {
       Alert.alert("Error", "Failed to upload your content. Please try again.");
     } finally {
       setIsUploading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -105,6 +114,21 @@ export default function CreateScreen() {
             </View>
           )}
         </TouchableOpacity>
+
+        {/* Upload Progress Bar */}
+        {isUploading && (
+          <View className="mb-6">
+            <View className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+              <View 
+                className="h-full bg-yellow-400" 
+                style={{ width: `${uploadProgress * 100}%` }}
+              />
+            </View>
+            <Text className="text-center text-xs text-gray-400 mt-2 font-bold">
+              Uploading: {Math.round(uploadProgress * 100)}%
+            </Text>
+          </View>
+        )}
 
         {/* Inputs */}
         <View className="space-y-4">

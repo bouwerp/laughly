@@ -46,7 +46,8 @@
     "react-native-svg": "^15.15.4",
     "react-native-web": "~0.21.0",
     "react-native-worklets": "0.5.1",
-    "tailwindcss": "^4.2.2"
+    "tailwindcss": "^4.2.2",
+    "tus-js-client": "^4.3.1"
   },
   "devDependencies": {
     "@types/react": "~19.1.0",

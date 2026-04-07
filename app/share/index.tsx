@@ -19,6 +19,7 @@ export default function ShareIntentScreen() {
   const [description, setDescription] = useState('');
   const [tags, setTags] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   // Video preview player
   const player = (shareIntent.type === 'video' && shareIntent.value) ? useVideoPlayer(shareIntent.value, (player) => {
@@ -38,17 +39,24 @@ export default function ShareIntentScreen() {
 
     try {
       setIsUploading(true);
+      setUploadProgress(0);
       
       const fileExt = shareIntent.value.split('.').pop() || (shareIntent.type === 'video' ? 'mp4' : 'jpg');
       const fileName = `shared-${Date.now()}.${fileExt}`;
       const filePath = `${session.user.id}/${fileName}`;
 
-      // 1. Upload to Storage
-      await services.storageService.uploadFile(shareIntent.value, {
-        bucket: 'media',
-        path: filePath,
-        contentType: shareIntent.type === 'video' ? 'video/mp4' : 'image/jpeg',
-      });
+      // 1. Upload to Storage with progress
+      await services.storageService.uploadFile(
+        shareIntent.value, 
+        {
+          bucket: 'media',
+          path: filePath,
+          contentType: shareIntent.type === 'video' ? 'video/mp4' : 'image/jpeg',
+        },
+        (progress) => {
+          setUploadProgress(progress);
+        }
+      );
 
       // 2. Save to Database
       await services.databaseService.insert('jokes', {
@@ -70,6 +78,7 @@ export default function ShareIntentScreen() {
       Alert.alert("Error", "Failed to save shared content.");
     } finally {
       setIsUploading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -111,6 +120,21 @@ export default function ShareIntentScreen() {
             <Image source={shareIntent.value} style={{ width: '100%', height: '100%' }} contentFit="cover" />
           )}
         </View>
+
+        {/* Upload Progress Bar */}
+        {isUploading && (
+          <View className="mb-6">
+            <View className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+              <View 
+                className="h-full bg-yellow-400" 
+                style={{ width: `${uploadProgress * 100}%` }}
+              />
+            </View>
+            <Text className="text-center text-xs text-gray-400 mt-2 font-bold">
+              Uploading: {Math.round(uploadProgress * 100)}%
+            </Text>
+          </View>
+        )}
 
         {/* Form */}
         <View className="space-y-4">
