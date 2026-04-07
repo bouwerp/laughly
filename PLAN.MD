@@ -76,10 +76,15 @@ laughly/
 
 ### Phase 1.2: Local Development Setup (End-to-End Local)
 - [x] **Supabase Local Dev:** Initialize and start Supabase locally using the CLI (`supabase start`).
-- [x] **Local Environment:** Create a `.env` template for local development pointing to `127.0.0.1:54321`.
-- [x] **Seed Data:** Create a `supabase/seed.sql` to populate the local DB for testing.
+- [x] **Local Environment:** Create a `.env` template for local development.
+- [x] **Seed Data:** Create a `supabase/seed.sql` to populate the local DB.
 - [x] **Storage Initialization:** Automate the creation of the `media` bucket in the local Supabase instance.
 - [x] **Local Testing Workflow:** Add npm scripts to start the local backend and Expo app in tandem.
+
+### Phase 1.3: Environment Switching (Local vs. Cloud)
+- [ ] **Environment Separation:** Implement `.env.local` and `.env.production` files.
+- [ ] **Run Scripts:** Add `npm run start:local` and `npm run start:cloud` to toggle backend targets.
+- [ ] **IP Discovery Utility:** Add a script to automatically inject the host machine's IP for Android/iOS local backend access.
 
 ### Phase 1.5: CI/CD & Deployment Workflows (Automated Delivery)
 - [x] Set up **GitHub Actions** for automated workflows on push to `main`.
