@@ -9,7 +9,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 
-export default function ShareIntentScreen() {
+export default function ShareIndex() {
   const { hasShareIntent, shareIntent, resetShareIntent, error } = useShareIntent();
   const { session, isLoading: authLoading } = useAuth();
   const queryClient = useQueryClient();

@@ -1,40 +1,41 @@
 import { IAuthService, AuthSession } from '../../core/interfaces/IAuthService';
 import { supabase } from '../SupabaseClient';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { Alert, Platform } from 'react-native';
+import { Alert } from 'react-native';
 
 export class SupabaseAuthAdapter implements IAuthService {
-  private isNativeModuleAvailable = false;
+  private googleSigninModule: any = null;
 
   constructor() {
+    this.initGoogle();
+  }
+
+  private async initGoogle() {
     try {
-      GoogleSignin.configure({
+      // Lazy load to avoid RNGoogleSignin missing error in Expo Go
+      const { GoogleSignin } = require('@react-native-google-signin/google-signin');
+      this.googleSigninModule = GoogleSignin;
+      
+      this.googleSigninModule.configure({
         webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
         iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
       });
-      this.isNativeModuleAvailable = true;
     } catch (e) {
-      console.warn('GoogleSignin native module not found. Authentication will be disabled.');
-      this.isNativeModuleAvailable = false;
+      console.warn('GoogleSignin native module not available in this environment.');
     }
   }
 
   async signInWithGoogle(): Promise<AuthSession> {
-    if (!this.isNativeModuleAvailable) {
+    if (!this.googleSigninModule) {
       Alert.alert(
         "Development Mode",
-        "Google Sign-In requires a Development Build (EAS). It is not supported in Expo Go.\n\nWould you like to use a test session?",
-        [
-          { text: "Cancel", style: "cancel" },
-          { text: "Use Test Session", onPress: () => this.mockSignIn() }
-        ]
+        "Google Sign-In requires a Development Build (EAS). It is not supported in Expo Go."
       );
       throw new Error('Native GoogleSignin module not available');
     }
 
     try {
-      await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
+      await this.googleSigninModule.hasPlayServices();
+      const userInfo = await this.googleSigninModule.signIn();
       
       if (!userInfo.data?.idToken) {
         throw new Error('No ID token present from Google Sign-In.');
@@ -55,16 +56,13 @@ export class SupabaseAuthAdapter implements IAuthService {
     }
   }
 
-  private async mockSignIn(): Promise<AuthSession> {
-    // For local dev in Expo Go, we can sign in with a test account if you have one enabled in Supabase
-    // Or we can just return a dummy session if we want to bypass auth for UI testing.
-    console.log("Mock Sign-In triggered");
-    throw new Error("Mock Sign-In not fully implemented. Please use a Dev Build for real Auth.");
-  }
-
   async signOut(): Promise<void> {
-    if (this.isNativeModuleAvailable) {
-      await GoogleSignin.signOut();
+    if (this.googleSigninModule) {
+      try {
+        await this.googleSigninModule.signOut();
+      } catch (e) {
+        console.error('Sign out from Google failed', e);
+      }
     }
     await supabase.auth.signOut();
   }
