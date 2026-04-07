@@ -25,11 +25,16 @@ Laughly has been transformed into a fully functional, high-performance "Personal
 - **Supabase Adapters:** Initial infrastructure implemented using Supabase but easily swappable via DI.
 - **Unified Native Auth:** Uses native ID tokens for Google, avoiding web-based redirects.
 - **Local-First Backend:** Local dev utilizes Supabase Docker containers, synchronized with cloud schema.
+- **Security:** Local credentials must be maintained in a `.env` file (ignored by git). A `.env.example` template is provided for new environments.
 
 ---
 
 ## 🚀 Next Steps (Priority)
-1.  **Infrastructure Config:** User needs to set up Supabase/Google Cloud IDs in `.env` and EAS Secrets.
+1.  **Infrastructure Config:**
+    - Set up **Web Application** Client ID in Google Cloud Console.
+    - Set up **iOS** Client ID in Google Cloud Console.
+    - Set up **Android** Client ID in Google Cloud Console (Requires SHA-1 from `eas credentials`).
+    - Add all IDs and Supabase keys to local `.env` and EAS Secrets.
 2.  **Phase 7 (AI Moderation):** Define `IModerationService` and implement automated content flagging.
 3.  **Phase 8 (Realtime):** Implement WebSocket endpoints for live database updates.
 4.  **Phase 9 (Social):** Build Following and Private Messaging core logic.

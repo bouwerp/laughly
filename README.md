@@ -78,12 +78,19 @@ Laughly is designed to run end-to-end on your local machine using Docker:
 ### Production/Cloud Setup
 1. Clone the repository: `git clone https://github.com/bouwerp/laughly.git`
 2. Install dependencies: `npm install --legacy-peer-deps`
-3. Configure environment variables in `.env`:
+3. **Configure Google Authentication:**
+   - Go to [Google Cloud Console](https://console.cloud.google.com/).
+   - Create a **Web Application** Client ID (Used by both platforms to get the ID Token).
+   - Create an **iOS** Client ID (Enter your Bundle ID from `app.json`).
+   - Create an **Android** Client ID:
+     - Get your SHA-1: Run `eas credentials` or `npx expo run:android`.
+     - Enter your Package Name and SHA-1 in the Google Console.
+4. **Configure Environment:** Update `.env` with your keys:
    - `EXPO_PUBLIC_SUPABASE_URL`
    - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
-   - `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`
-   - `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID`
-4. Start the app: `npx expo start`
+   - `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` (The "Web Application" ID)
+   - `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID` (The "iOS" ID)
+5. Start the app: `npx expo start`
 
 ---
 
