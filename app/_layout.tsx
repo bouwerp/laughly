@@ -9,7 +9,7 @@ import 'react-native-reanimated';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useShareIntent } from 'expo-share-intent';
 
-import { useColorScheme } from '../components/useColorScheme';
+import { useColorScheme } from '@/components/useColorScheme';
 import { AuthProvider, useAuth } from '../hooks/useAuth';
 
 export {
@@ -27,7 +27,21 @@ SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
 
-export default function RootLayout() {
+/**
+ * Root Provider wrapper to ensure all hooks (useAuth, useJokes, etc.) 
+ * have access to their respective contexts.
+ */
+export default function Root() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <RootLayout />
+      </AuthProvider>
+    </QueryClientProvider>
+  );
+}
+
+function RootLayout() {
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
@@ -47,13 +61,7 @@ export default function RootLayout() {
     return null;
   }
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <RootLayoutNav />
-      </AuthProvider>
-    </QueryClientProvider>
-  );
+  return <RootLayoutNav />;
 }
 
 function RootLayoutNav() {
