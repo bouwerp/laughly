@@ -92,14 +92,21 @@ export default function CreateScreen() {
   };
 
   return (
-    <ScrollView className="flex-1 bg-white">
-      <Stack.Screen options={{ title: 'Add New Joke' }} />
+    <ScrollView className="flex-1 bg-background">
+      <Stack.Screen options={{ 
+        title: 'Add New Joke',
+        headerShown: true,
+        headerStyle: { backgroundColor: '#fff' },
+        headerShadowVisible: false,
+        headerTitleStyle: { fontWeight: 'bold' }
+      }} />
       
       <View className="p-6">
         {/* Media Selector */}
         <TouchableOpacity 
           onPress={pickMedia}
-          className="aspect-square bg-gray-100 rounded-3xl items-center justify-center overflow-hidden mb-6 border-2 border-dashed border-gray-300"
+          activeOpacity={0.7}
+          className="aspect-square bg-card rounded-[32px] items-center justify-center overflow-hidden mb-6 border border-muted/30"
         >
           {media ? (
             media.type === 'video' && player ? (
@@ -109,8 +116,11 @@ export default function CreateScreen() {
             )
           ) : (
             <View className="items-center">
-              <FontAwesome name="cloud-upload" size={48} color="#9CA3AF" />
-              <Text className="text-gray-400 mt-2 font-medium">Tap to select a meme or video</Text>
+              <View className="w-16 h-16 bg-secondary rounded-full items-center justify-center mb-4">
+                <FontAwesome name="upload" size={24} color="#ff272a" />
+              </View>
+              <Text className="text-foreground text-base font-bold">Tap to select a meme or video</Text>
+              <Text className="text-muted-foreground mt-1 font-medium">Supports JPG, PNG, and MP4</Text>
             </View>
           )}
         </TouchableOpacity>
@@ -118,13 +128,13 @@ export default function CreateScreen() {
         {/* Upload Progress Bar */}
         {isUploading && (
           <View className="mb-6">
-            <View className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+            <View className="h-2 w-full bg-muted/30 rounded-full overflow-hidden">
               <View 
-                className="h-full bg-yellow-400" 
+                className="h-full bg-primary" 
                 style={{ width: `${uploadProgress * 100}%` }}
               />
             </View>
-            <Text className="text-center text-xs text-gray-400 mt-2 font-bold">
+            <Text className="text-center text-xs text-muted-foreground mt-2 font-bold uppercase tracking-wider">
               Uploading: {Math.round(uploadProgress * 100)}%
             </Text>
           </View>
@@ -132,21 +142,23 @@ export default function CreateScreen() {
 
         {/* Inputs */}
         <View className="space-y-4">
-          <View>
-            <Text className="text-sm font-semibold text-gray-700 mb-2">Title</Text>
+          <View className="mb-4">
+            <Text className="text-sm font-bold text-foreground mb-2">Title</Text>
             <TextInput
-              className="bg-gray-50 p-4 rounded-xl text-gray-900 border border-gray-100"
+              className="bg-card p-4 rounded-2xl text-foreground font-medium border border-muted/20"
               placeholder="Give your joke a title..."
+              placeholderTextColor="#949494"
               value={title}
               onChangeText={setTitle}
             />
           </View>
 
-          <View>
-            <Text className="text-sm font-semibold text-gray-700 mb-2">Description</Text>
+          <View className="mb-4">
+            <Text className="text-sm font-bold text-foreground mb-2">Description</Text>
             <TextInput
-              className="bg-gray-50 p-4 rounded-xl text-gray-900 border border-gray-100 min-h-[100px]"
+              className="bg-card p-4 rounded-2xl text-foreground font-medium border border-muted/20 min-h-[100px]"
               placeholder="What makes this funny?"
+              placeholderTextColor="#949494"
               multiline
               textAlignVertical="top"
               value={description}
@@ -154,11 +166,12 @@ export default function CreateScreen() {
             />
           </View>
 
-          <View>
-            <Text className="text-sm font-semibold text-gray-700 mb-2">Tags (comma separated)</Text>
+          <View className="mb-6">
+            <Text className="text-sm font-bold text-foreground mb-2">Tags (comma separated)</Text>
             <TextInput
-              className="bg-gray-50 p-4 rounded-xl text-gray-900 border border-gray-100"
+              className="bg-card p-4 rounded-2xl text-foreground font-medium border border-muted/20"
               placeholder="meme, cats, work, ..."
+              placeholderTextColor="#949494"
               value={tags}
               onChangeText={setTags}
             />
@@ -169,16 +182,17 @@ export default function CreateScreen() {
         <TouchableOpacity
           onPress={handleUpload}
           disabled={!media || isUploading}
-          className={`mt-8 py-4 rounded-2xl flex-row items-center justify-center ${
-            !media || isUploading ? 'bg-gray-300' : 'bg-yellow-400'
+          activeOpacity={0.8}
+          className={`py-5 rounded-[24px] flex-row items-center justify-center shadow-sm ${
+            !media || isUploading ? 'bg-muted/50' : 'bg-primary'
           }`}
         >
           {isUploading ? (
-            <ActivityIndicator color="black" />
+            <ActivityIndicator color="white" />
           ) : (
             <>
-              <FontAwesome name="plus" size={18} color="black" />
-              <Text className="text-black font-bold ml-2 text-lg">Add to Database</Text>
+              <FontAwesome name="plus" size={18} color="white" />
+              <Text className="text-white font-bold ml-2 text-lg">Add to Database</Text>
             </>
           )}
         </TouchableOpacity>
