@@ -19,6 +19,7 @@ export default function ShareIndex() {
   const [description, setDescription] = useState('');
   const [tags, setTags] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  const [isModerating, setIsModerating] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
   // Video preview player
@@ -38,6 +39,20 @@ export default function ShareIndex() {
     if (!shareIntent.value || !session?.user?.id) return;
 
     try {
+      setIsModerating(true);
+      
+      // 1. AI Moderation Check (Phase 7)
+      const textToModerate = `${title} ${description}`.trim();
+      if (textToModerate) {
+        const result = await services.moderationService.moderateText(textToModerate);
+        if (!result.isSafe) {
+          Alert.alert("Content Flagged", `Sorry, this content was flagged: ${result.reason}`);
+          setIsModerating(false);
+          return;
+        }
+      }
+
+      setIsModerating(false);
       setIsUploading(true);
       setUploadProgress(0);
       
@@ -45,7 +60,7 @@ export default function ShareIndex() {
       const fileName = `shared-${Date.now()}.${fileExt}`;
       const filePath = `${session.user.id}/${fileName}`;
 
-      // 1. Upload to Storage with progress
+      // 2. Upload to Storage with progress
       await services.storageService.uploadFile(
         shareIntent.value, 
         {
@@ -58,7 +73,7 @@ export default function ShareIndex() {
         }
       );
 
-      // 2. Save to Database
+      // 3. Save to Database
       await services.databaseService.insert('jokes', {
         user_id: session.user.id,
         title: title || "Shared via Laughly",
@@ -66,9 +81,13 @@ export default function ShareIndex() {
         tags: tags ? tags.split(',').map(t => t.trim().toLowerCase()).filter(t => t !== '') : [],
         media_path: filePath,
         media_type: shareIntent.type === 'video' ? 'video' : 'image',
+        metadata: {
+          moderation_status: 'safe',
+          moderated_at: new Date().toISOString(),
+        }
       });
 
-      // 3. Cleanup
+      // 4. Cleanup
       queryClient.invalidateQueries({ queryKey: ['jokes'] });
       resetShareIntent();
       Alert.alert("Success", "Saved to your database!");
@@ -78,42 +97,56 @@ export default function ShareIndex() {
       Alert.alert("Error", "Failed to save shared content.");
     } finally {
       setIsUploading(false);
+      setIsModerating(false);
       setUploadProgress(0);
     }
   };
 
   if (authLoading) {
     return (
-      <View className="flex-1 items-center justify-center bg-white">
-        <ActivityIndicator size="large" color="#000" />
+      <View className="flex-1 items-center justify-center bg-background">
+        <ActivityIndicator size="large" color="#ff272a" />
       </View>
     );
   }
 
   if (!hasShareIntent) {
     return (
-      <View className="flex-1 items-center justify-center bg-white p-6">
-        <Text className="text-gray-500 text-center">No content shared with Laughly.</Text>
+      <View className="flex-1 items-center justify-center bg-background p-6">
+        <View className="w-20 h-20 bg-muted rounded-full items-center justify-center mb-4">
+          <FontAwesome name="share-alt" size={32} color="#949494" />
+        </View>
+        <Text className="text-xl font-bold text-foreground text-center">No content shared</Text>
+        <Text className="text-muted-foreground text-center mt-2 font-medium">
+          Share a photo or video from another app to see it here!
+        </Text>
         <TouchableOpacity 
           onPress={() => router.replace('/(tabs)')}
-          className="mt-4 bg-yellow-400 px-6 py-3 rounded-xl"
+          className="mt-8 bg-primary px-8 py-4 rounded-2xl"
         >
-          <Text className="font-bold">Go to App</Text>
+          <Text className="text-white font-bold text-lg">Go to App</Text>
         </TouchableOpacity>
       </View>
     );
   }
 
   return (
-    <ScrollView className="flex-1 bg-white">
+    <ScrollView className="flex-1 bg-background">
       <View className="p-6">
-        <View className="items-center mb-8">
-          <Text className="text-2xl font-bold text-gray-900">Save to Laughly</Text>
-          <Text className="text-gray-500 mt-1">Add this to your funny collection</Text>
+        <View className="flex-row items-center justify-between mb-8">
+          <View>
+            <Text className="text-3xl font-bold text-foreground">Save Joke</Text>
+            <Text className="text-muted-foreground font-medium">Adding to your funny collection</Text>
+          </View>
+          <TouchableOpacity onPress={() => { resetShareIntent(); router.replace('/(tabs)'); }}>
+            <View className="w-10 h-10 bg-card rounded-full items-center justify-center border border-muted/20">
+              <FontAwesome name="times" size={20} color="#000" />
+            </View>
+          </TouchableOpacity>
         </View>
 
         {/* Preview */}
-        <View className="aspect-square bg-gray-100 rounded-3xl overflow-hidden mb-6">
+        <View className="aspect-square bg-card rounded-[32px] overflow-hidden mb-8 border border-muted/20">
           {shareIntent.type === 'video' && player ? (
             <VideoView player={player} style={{ width: '100%', height: '100%' }} contentFit="cover" />
           ) : (
@@ -121,61 +154,74 @@ export default function ShareIndex() {
           )}
         </View>
 
-        {/* Upload Progress Bar */}
-        {isUploading && (
-          <View className="mb-6">
-            <View className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+        {/* Status Indicators */}
+        {(isModerating || isUploading) && (
+          <View className="mb-8">
+            <View className="h-2 w-full bg-muted/30 rounded-full overflow-hidden">
               <View 
-                className="h-full bg-yellow-400" 
-                style={{ width: `${uploadProgress * 100}%` }}
+                className="h-full bg-primary" 
+                style={{ width: isModerating ? '30%' : `${uploadProgress * 100}%` }}
               />
             </View>
-            <Text className="text-center text-xs text-gray-400 mt-2 font-bold">
-              Uploading: {Math.round(uploadProgress * 100)}%
+            <Text className="text-center text-xs text-muted-foreground mt-2 font-bold uppercase tracking-widest">
+              {isModerating ? 'AI is checking safety...' : `Uploading: ${Math.round(uploadProgress * 100)}%`}
             </Text>
           </View>
         )}
 
         {/* Form */}
         <View className="space-y-4">
-          <TextInput
-            className="bg-gray-50 p-4 rounded-xl border border-gray-100"
-            placeholder="Joke Title"
-            value={title}
-            onChangeText={setTitle}
-          />
-          <TextInput
-            className="bg-gray-50 p-4 rounded-xl border border-gray-100 min-h-[80px]"
-            placeholder="Description (Optional)"
-            multiline
-            value={description}
-            onChangeText={setDescription}
-          />
-          <TextInput
-            className="bg-gray-50 p-4 rounded-xl border border-gray-100"
-            placeholder="Tags (comma separated)"
-            value={tags}
-            onChangeText={setTags}
-          />
+          <View className="mb-4">
+            <Text className="text-sm font-bold text-foreground mb-2">Title</Text>
+            <TextInput
+              className="bg-card p-4 rounded-2xl text-foreground font-medium border border-muted/20"
+              placeholder="Give it a title..."
+              placeholderTextColor="#949494"
+              value={title}
+              onChangeText={setTitle}
+            />
+          </View>
+          
+          <View className="mb-4">
+            <Text className="text-sm font-bold text-foreground mb-2">Description (Optional)</Text>
+            <TextInput
+              className="bg-card p-4 rounded-2xl text-foreground font-medium border border-muted/20 min-h-[100px]"
+              placeholder="What makes this funny?"
+              placeholderTextColor="#949494"
+              multiline
+              textAlignVertical="top"
+              value={description}
+              onChangeText={setDescription}
+            />
+          </View>
+
+          <View className="mb-8">
+            <Text className="text-sm font-bold text-foreground mb-2">Tags</Text>
+            <TextInput
+              className="bg-card p-4 rounded-2xl text-foreground font-medium border border-muted/20"
+              placeholder="meme, work, coding..."
+              placeholderTextColor="#949494"
+              value={tags}
+              onChangeText={setTags}
+            />
+          </View>
         </View>
 
-        {/* Buttons */}
-        <View className="flex-row space-x-4 mt-8">
-          <TouchableOpacity 
-            onPress={() => { resetShareIntent(); router.replace('/(tabs)'); }}
-            className="flex-1 bg-gray-100 py-4 rounded-xl items-center"
-          >
-            <Text className="text-gray-600 font-bold">Cancel</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
-            onPress={handleSave}
-            disabled={isUploading}
-            className="flex-1 bg-yellow-400 py-4 rounded-xl items-center"
-          >
-            {isUploading ? <ActivityIndicator color="black" /> : <Text className="text-black font-bold">Save Joke</Text>}
-          </TouchableOpacity>
-        </View>
+        {/* Save Button */}
+        <TouchableOpacity 
+          onPress={handleSave}
+          disabled={isUploading || isModerating}
+          activeOpacity={0.8}
+          className={`py-5 rounded-[24px] items-center shadow-sm ${
+            isUploading || isModerating ? 'bg-muted/50' : 'bg-primary'
+          }`}
+        >
+          {isUploading || isModerating ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Text className="text-white font-bold text-lg">Save to Database</Text>
+          )}
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
