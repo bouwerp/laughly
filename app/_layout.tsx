@@ -9,7 +9,7 @@ import 'react-native-reanimated';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useShareIntent } from 'expo-share-intent';
 
-import { useColorScheme } from '@/components/useColorScheme';
+import { useColorScheme } from '../components/useColorScheme';
 import { AuthProvider, useAuth } from '../hooks/useAuth';
 
 export {
