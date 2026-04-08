@@ -42,13 +42,6 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <FontAwesome name="user-circle" size={24} color={color} />,
         }}
       />
-      {/* Hide the default tab created by the template */}
-      <Tabs.Screen
-        name="two"
-        options={{
-          href: null,
-        }}
-      />
     </Tabs>
   );
 }

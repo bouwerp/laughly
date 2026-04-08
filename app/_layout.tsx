@@ -27,54 +27,12 @@ SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
 
-function RootLayoutNav() {
-  const { session, isLoading } = useAuth();
-  const segments = useSegments();
-  const router = useRouter();
-  const { hasShareIntent } = useShareIntent();
-
-  const colorScheme = useColorScheme();
-
-  useEffect(() => {
-    if (isLoading) return;
-
-    const inAuthGroup = segments[0] === '(auth)';
-    const inShareGroup = segments[0] === 'share';
-
-    // Handle Share Intent Redirection
-    if (hasShareIntent && !inShareGroup) {
-      router.replace('/share');
-      return;
-    }
-
-    if (!session && !inAuthGroup && !inShareGroup) {
-      // Redirect to the login page if the user is not authenticated
-      router.replace('/(auth)/login');
-    } else if (session && inAuthGroup) {
-      // Redirect to the home page if the user is authenticated
-      router.replace('/(tabs)');
-    }
-  }, [session, isLoading, segments, hasShareIntent]);
-
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="share" options={{ presentation: 'modal', headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
-    </ThemeProvider>
-  );
-}
-
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
   });
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
   }, [error]);
@@ -95,5 +53,45 @@ export default function RootLayout() {
         <RootLayoutNav />
       </AuthProvider>
     </QueryClientProvider>
+  );
+}
+
+function RootLayoutNav() {
+  const { session, isLoading: authLoading } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
+  const { hasShareIntent } = useShareIntent();
+  const colorScheme = useColorScheme();
+
+  useEffect(() => {
+    if (authLoading) return;
+
+    const inAuthGroup = segments[0] === '(auth)';
+    const inShareGroup = segments[0] === 'share';
+
+    // Handle Share Intent Redirection
+    if (hasShareIntent && !inShareGroup) {
+      router.replace('/share');
+      return;
+    }
+
+    if (!session && !inAuthGroup && !inShareGroup) {
+      // Redirect to the login page if the user is not authenticated
+      router.replace('/(auth)/login');
+    } else if (session && inAuthGroup) {
+      // Redirect to the home page if the user is authenticated
+      router.replace('/(tabs)');
+    }
+  }, [session, authLoading, segments, hasShareIntent]);
+
+  return (
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Screen name="share" options={{ presentation: 'modal', headerShown: false }} />
+        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+      </Stack>
+    </ThemeProvider>
   );
 }
