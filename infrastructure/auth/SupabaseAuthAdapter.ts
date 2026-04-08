@@ -4,6 +4,7 @@ import { Alert } from 'react-native';
 
 export class SupabaseAuthAdapter implements IAuthService {
   private googleSigninModule: any = null;
+  private authChangeCallback: ((session: AuthSession | null) => void) | null = null;
 
   constructor() {
     this.initGoogle();
@@ -26,11 +27,16 @@ export class SupabaseAuthAdapter implements IAuthService {
 
   async signInWithGoogle(): Promise<AuthSession> {
     if (!this.googleSigninModule) {
-      Alert.alert(
-        "Development Mode",
-        "Google Sign-In requires a Development Build (EAS). It is not supported in Expo Go."
-      );
-      throw new Error('Native GoogleSignin module not available');
+      return new Promise((resolve, reject) => {
+        Alert.alert(
+          "Development Mode",
+          "Google Sign-In requires a Development Build. Would you like to use a Test Session?",
+          [
+            { text: "Cancel", style: "cancel", onPress: () => reject(new Error('Sign-in cancelled')) },
+            { text: "Use Test Session", onPress: () => resolve(this.mockSignIn()) }
+          ]
+        );
+      });
     }
 
     try {
@@ -56,6 +62,26 @@ export class SupabaseAuthAdapter implements IAuthService {
     }
   }
 
+  private async mockSignIn(): Promise<AuthSession> {
+    console.log("Mock Sign-In active");
+    const mockSession: AuthSession = {
+      user: {
+        id: '00000000-0000-0000-0000-000000000000',
+        email: 'test@example.com',
+        name: 'Test User',
+        avatarUrl: 'https://placekitten.com/200/200',
+      },
+      accessToken: 'mock-token',
+    };
+
+    // Trigger the callback manually to simulate a real auth change
+    if (this.authChangeCallback) {
+      this.authChangeCallback(mockSession);
+    }
+
+    return mockSession;
+  }
+
   async signOut(): Promise<void> {
     if (this.googleSigninModule) {
       try {
@@ -65,6 +91,9 @@ export class SupabaseAuthAdapter implements IAuthService {
       }
     }
     await supabase.auth.signOut();
+    if (this.authChangeCallback) {
+      this.authChangeCallback(null);
+    }
   }
 
   async getSession(): Promise<AuthSession | null> {
@@ -74,6 +103,7 @@ export class SupabaseAuthAdapter implements IAuthService {
   }
 
   onAuthStateChange(callback: (session: AuthSession | null) => void): () => void {
+    this.authChangeCallback = callback;
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
       callback(session ? this.mapSession(session) : null);
     });

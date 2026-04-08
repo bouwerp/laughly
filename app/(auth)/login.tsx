@@ -26,7 +26,7 @@ export default function LoginScreen() {
     <View className="flex-1 bg-white px-6 justify-center">
       <View className="items-center mb-12">
         <View className="w-20 h-20 bg-yellow-400 rounded-3xl items-center justify-center mb-4 transform rotate-12">
-          <FontAwesome name="laugh-beam" size={40} color="black" />
+          <FontAwesome name="smile-o" size={40} color="black" />
         </View>
         <Text className="text-4xl font-bold text-gray-900">Laughly</Text>
         <Text className="text-gray-500 mt-2 text-center text-lg">
