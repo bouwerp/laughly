@@ -50,7 +50,10 @@ export default function SettingsScreen() {
               style={{ width: 100, height: 100, borderRadius: 50 }}
               className="border-4 border-white shadow-sm"
             />
-            <TouchableOpacity className="absolute bottom-0 right-0 bg-primary w-8 h-8 rounded-full items-center justify-center border-2 border-white">
+            <TouchableOpacity 
+              className="absolute bottom-0 right-0 bg-primary w-8 h-8 rounded-full border-2 border-white"
+              style={{ justifyContent: 'center', alignItems: 'center' }}
+            >
               <FontAwesome name="camera" size={14} color="white" />
             </TouchableOpacity>
           </View>

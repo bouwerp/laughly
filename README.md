@@ -1,97 +1,67 @@
-# Laughly 🤣
+# Laughly: Social Media Joke Archive
 
-**Laughly** is a high-performance personal joke database and social media application designed for collecting, organizing, and sharing the funniest memes and videos. 
+Laughly is a personal joke database and social media application built with Expo (React Native) and Supabase.
 
-Built with **Expo (React Native)** and **Supabase**, Laughly offers a seamless experience for saving content you find across the web or in your gallery, ensuring you never lose a hilarious moment again.
+## 🚀 Getting Started
 
----
+### 1. Prerequisite: Native Development Build
+This project uses native modules (Google Sign-In, Share Intent, Video) and **cannot run in the standard Expo Go app**. You must create a custom Development Build on your device or simulator.
 
-## 🚀 Current Status: Phase 6 (Polishing & Performance) Complete
+#### To build and install for the first time:
+*   **iOS Simulator:** `npx expo run:ios`
+*   **Android Emulator:** `npx expo run:android`
+*   **Physical Device:** `npx expo run:ios --device` or `npx expo run:android`
 
-We have successfully established the foundational core of Laughly, focusing on a robust "Personal Database" experience. The app is fully functional with native authentication, high-performance media playback, and deep system integration.
-
-### ✅ Supported Features
-- **Native Authentication:** Seamless, secure sign-in with **Google** via native ID Token flows (Supabase Auth).
-- **Personal Joke Database:** A fluid, infinite-scrolling feed of your saved memes and videos using `@shopify/flash-list`.
-- **Elite Media Playback:** High-performance rendering for images (`expo-image`) and videos (`expo-video`) with built-in caching and auto-play.
-- **"Share to Laughly" (Native):** Save content directly from Safari, Photos, Instagram, or other apps using the system share sheet (`expo-share-intent`).
-- **Manual Uploads:** Simple in-app interface for selecting and uploading media from your device library.
-- **Organization & Search:** Fast, local filtering of your database by **Title**, **Description**, and **Tags**.
-- **Tactile Feedback:** Integrated **Haptic Feedback** (`expo-haptics`) for a premium, responsive user experience.
-- **Automated CI/CD:** 
-  - **Backend:** Automatic deployment of Supabase Edge Functions and DB migrations on push to `main`.
-  - **Mobile:** Automated EAS builds for iOS and Android triggered by code changes.
+*Note: For iOS, you must have Xcode installed. For Android, you must have Android Studio and a valid SDK.*
 
 ---
 
-## 🛠 Tech Stack
+## 🛠 Development Workflow
 
-### Frontend
-- **Framework:** Expo SDK (React Native) + TypeScript
-- **Navigation:** Expo Router (File-based)
-- **Styling:** NativeWind v4 (Tailwind CSS)
-- **Data Fetching:** TanStack Query (React Query)
-- **State Management:** Reactive Hooks + Service Container (Dependency Injection)
+The project supports two backend targets: **Local (Docker)** and **Cloud (Supabase Production)**.
 
-### Backend & Infrastructure
-- **Provider:** Supabase (PostgreSQL + Auth + Storage)
-- **Compute:** Supabase Edge Functions (Serverless Deno)
-- **Hosting:** S3-compatible storage with global CDN
-- **Security:** Row Level Security (RLS) + encrypted session storage (`expo-secure-store`)
+### Option A: Local Development (Offline)
+Runs a full Supabase stack on your machine via Docker. Use this for schema changes or testing without affecting production data.
 
----
+1.  **Start Local Backend:** `npm run supabase:start`
+2.  **Run App (Local Mode):** `npm run dev:local`
+    *   *This script automatically switches `.env` to `.env.local` and starts the Expo dev server.*
+3.  **Local Mock Sign-In:** When prompted on the device, select "Use Test Session" to sign in as `test@example.com` (password: `password123`).
 
-## 🔮 Future Roadmap
+### Option B: Cloud Development (Live)
+Connects directly to the production Supabase instance.
 
-Laughly is evolving from a personal database into a robust social platform:
-
-- **Phase 7: AI Moderation:** Automated content flagging for safety using AI vision APIs.
-- **Phase 8: Real-time Social:** WebSocket-based event broadcasting for live updates.
-- **Phase 9: Social Core:** Private messaging, user following, and public profiles.
-- **Phase 10: Discovery Algorithm:** A sophisticated feed for discovering the world's funniest content.
+1.  **Run App (Cloud Mode):** `npm run dev:cloud`
+    *   *This script switches `.env` to `.env.production` and starts the Expo dev server.*
+2.  **Real Google Sign-In:** Uses the native `@react-native-google-signin/google-signin` module.
 
 ---
 
-## 🏗 Engineering Philosophy
-Laughly is built with a **Platform Agnostic** mindset. By utilizing **Interface Segregation** and **Dependency Injection**, the core business logic is entirely decoupled from specific providers (like Supabase). This allows for effortless switching of infrastructure (e.g., to AWS or Firebase) without refactoring the application's domain layer.
+## 🏗 Key Commands
 
----
-## 🏁 Getting Started
-
-### Prerequisites
-- Node.js 20+
-- Docker (for local Supabase instance)
-- Supabase CLI: `npm install supabase --save-dev`
-- Expo Go or a Development Build
-
-### Local Development (Recommended)
-Laughly is designed to run end-to-end on your local machine using Docker:
-
-1.  **Initialize Supabase:** `npm run supabase:start`
-    - This will start the local database, auth, and storage services.
-    - Note: The first run may take a few minutes to download Docker images.
-2.  **Configure Environment:**
-    - Copy `.env.example` to `.env`.
-    - Update `EXPO_PUBLIC_SUPABASE_ANON_KEY` with the `anon key` provided by `npm run supabase:status`.
-3.  **Start the App:** `npm run dev` (starts both Supabase and Expo) or `npm start`.
-
-### Production/Cloud Setup
-1. Clone the repository: `git clone https://github.com/bouwerp/laughly.git`
-2. Install dependencies: `npm install --legacy-peer-deps`
-3. **Configure Google Authentication:**
-   - Go to [Google Cloud Console](https://console.cloud.google.com/).
-   - Create a **Web Application** Client ID (Used by both platforms to get the ID Token).
-   - Create an **iOS** Client ID (Enter your Bundle ID from `app.json`).
-   - Create an **Android** Client ID:
-     - Get your SHA-1: Run `eas credentials` or `npx expo run:android`.
-     - Enter your Package Name and SHA-1 in the Google Console.
-4. **Configure Environment:** Update `.env` with your keys:
-   - `EXPO_PUBLIC_SUPABASE_URL`
-   - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
-   - `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` (The "Web Application" ID)
-   - `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID` (The "iOS" ID)
-5. Start the app: `npx expo start`
+| Command | Description |
+| :--- | :--- |
+| `npm run dev:local` | Switch to local environment and start Expo |
+| `npm run dev:cloud` | Switch to production environment and start Expo |
+| `npx expo prebuild` | Re-generate native `ios` and `android` directories |
+| `supabase db reset` | Reset local database and apply all migrations |
+| `supabase db push` | Push local migrations to the production database |
+| `supabase functions deploy [name]` | Deploy an Edge Function to production |
 
 ---
 
-*Made with ❤️ and plenty of laughs.*
+## 📱 Features & Native Integration
+
+### Native Share Intent
+Laughly is registered with the system share sheet. You can share images, videos, or text from other apps (like Instagram, Photos, or Safari) directly to Laughly.
+*   **Testing:** Open your Photos app, select a meme, tap Share, and find "Laughly" in the app list.
+
+### Realtime Updates
+The database uses Supabase Realtime. When a joke is added (via the app or the share extension), your feed will update automatically on all devices without a manual refresh.
+
+---
+
+## 🔑 Environment Configuration
+*   `.env.local`: Configured for the local Supabase Docker instance.
+*   `.env.production`: Configured for the `bajyzxldvfharthlptud.supabase.co` project.
+*   **Google Auth:** Ensure your Web Client ID is added to the "Authorized Client IDs" list in the Supabase Dashboard for the environment you are testing.

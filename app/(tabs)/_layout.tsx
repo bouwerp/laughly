@@ -13,9 +13,8 @@ export default function TabLayout() {
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: true,
         tabBarStyle: {
-          paddingBottom: 5,
+          paddingBottom: 10,
           paddingTop: 5,
-          height: 60,
         },
         tabBarLabelStyle: {
           fontWeight: '600',

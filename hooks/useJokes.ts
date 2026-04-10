@@ -1,11 +1,42 @@
+import { useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { services } from '../services/ServiceContainer';
 import { Joke } from '../core/entities/Joke';
 import { useAuth } from './useAuth';
+import { supabase } from '../infrastructure/SupabaseClient';
 
 export function useJokes() {
   const { session } = useAuth();
   const queryClient = useQueryClient();
+
+  // 1. Set up Realtime Subscription
+  useEffect(() => {
+    if (!session?.user?.id) return;
+
+    // Use a unique channel name to avoid "already subscribed" errors during re-renders
+    const channelId = `jokes-realtime-${session.user.id}-${Math.random().toString(36).slice(2, 9)}`;
+    const channel = supabase
+      .channel(channelId)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'jokes',
+          filter: `user_id=eq.${session.user.id}`,
+        },
+        (payload) => {
+          console.log('Realtime update received:', payload.eventType);
+          // Invalidate the cache to trigger a refetch
+          queryClient.invalidateQueries({ queryKey: ['jokes', session.user.id] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [session?.user?.id, queryClient]);
 
   // Fetch all jokes for the current user
   const { data: jokes, isLoading, error, refetch } = useQuery({

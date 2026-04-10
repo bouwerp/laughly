@@ -1,39 +1,37 @@
 # SESSION_CONTEXT: Laughly Project
 
-## 📅 Last Updated: Tuesday, 7 April 2026
-**Session State:** Phase 1.3 Complete. Local Backend Stopped.
+## 📅 Last Updated: Thursday, 9 April 2026
+**Session State:** Cloud Backend Deployed. Google Sign-In fully functional via WebBrowser OAuth flow.
 
 ---
 
 ## 🛠 Project Progress Summary
-Laughly is now equipped with a professional-grade development workflow supporting both local and cloud-based backends.
+Laughly has been successfully deployed to the Supabase Cloud environment and refined for native mobile UX. We have successfully implemented a robust Google Sign-In flow using `expo-web-browser` after mitigating several native SDK and Supabase configuration hurdles.
 
 ### 🟢 Completed Milestones:
-- **Phase 1-6:** Core app features (Auth, Feed, Upload, Share, Search, Profile) fully implemented.
-- **Phase 1.2 (Local Dev):** End-to-end local environment using Supabase CLI and Docker.
-- **Phase 1.3 (Env Switching):** Automated system to toggle between `.env.local` and `.env.production`.
-- **Backend Robustness:** Profile sync triggers, TUS resumable uploads, and real-time progress tracking.
+- **Phase 8 (Realtime):** Enabled Supabase Realtime for `jokes` table and `follows` table.
+- **iOS Notch/Home Indicator Fix:** Implemented `SafeAreaProvider` and `useSafeAreaInsets`.
+- **Phase 9 (Social) Schema:** Created `follows` table and added `is_public` column to `jokes`.
+- **Development Client:** Installed `expo-dev-client` and ran `prebuild`.
+- **Google Sign-In Resolved:** Bypassed native `idToken` "Unacceptable audience" errors and Expo scheme `exp+` redirect rejections by utilizing a direct WebBrowser OAuth strategy with a clean `laughly://` deep link.
 
 ---
 
 ## 🏗 Key Architectural Decisions
-- **Environment Separation:** Isolated local and production configs to prevent data cross-pollution.
-- **TUS Protocol:** Standardized on Resumable Uploads for elite video reliability.
-- **Platform Agnostic Core:** Service adapters ensure easy provider switching.
+- **Native Development Client:** Transitioned from Expo Go to Development Client.
+- **OAuth Web Flow:** Migrated from `@react-native-google-signin/google-signin` to `expo-web-browser` and `expo-linking` for robust cross-environment Google Sign-In.
+- **Environment Management:** Renamed `.env.local` to `env.local` to prevent Expo's Metro bundler from aggressively overriding cloud configurations.
+- **Local Test User:** Created `test@example.com` / `password123` via migration for local development mock testing.
 
 ---
 
 ## 🚀 Next Steps (Priority)
-1.  **Phase 7 (AI Moderation):** Define `IModerationService` and implement automated content flagging.
-2.  **Phase 8 (Realtime):** Implement WebSocket endpoints for live database updates.
-3.  **Phase 9 (Social):** Build Following and Private Messaging core logic.
+1.  **Phase 9: Social:** Implement `Global Feed` tab for public discovery.
+2.  **Follow/Unfollow:** Build the UI and service logic for user relationships.
 
 ---
 
 ## 🏁 How to Continue
-- **Local Backend:** Already running via Docker.
-- **Local Keys:**
-  - **Publishable:** `sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH`
-  - **Secret:** [REDACTED] (See local .env.local)
 - **Run Locally:** `npm run dev:local`
 - **Run Cloud:** `npm run dev:cloud`
+- **Native Build:** `npx expo run:ios --device` or `npx expo run:android`

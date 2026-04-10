@@ -82,9 +82,9 @@ laughly/
 - [x] **Local Testing Workflow:** Add npm scripts to start the local backend and Expo app in tandem.
 
 ### Phase 1.3: Environment Switching (Local vs. Cloud)
-- [ ] **Environment Separation:** Implement `.env.local` and `.env.production` files.
-- [ ] **Run Scripts:** Add `npm run start:local` and `npm run start:cloud` to toggle backend targets.
-- [ ] **IP Discovery Utility:** Add a script to automatically inject the host machine's IP for Android/iOS local backend access.
+- [x] **Environment Separation:** Implement `.env.local` and `.env.production` files.
+- [x] **Run Scripts:** Add `npm run start:local` and `npm run start:cloud` to toggle backend targets.
+- [x] **IP Discovery Utility:** Add a script to automatically inject the host machine's IP for Android/iOS local backend access.
 
 ### Phase 1.5: CI/CD & Deployment Workflows (Automated Delivery)
 - [x] Set up **GitHub Actions** for automated workflows on push to `main`.
@@ -119,8 +119,16 @@ laughly/
 ### Phase 7: AI Moderation (Roadmap)
 - [ ] Define `IModerationService` and integrate into the upload use-case.
 
-### Phase 8: Event-Driven Architecture (Future)
-- [ ] Define `IRealtimeService` for WebSocket-based event-driven updates.
+### Phase 8: Event-Driven Architecture (Realtime)
+- [x] **Realtime Tables:** Enable Supabase Realtime for the `jokes` table.
+- [x] **Frontend Subscription:** Implement `useEffect` in `useJokes` to handle live updates.
+
+### Phase 9: Social (Network)
+- [x] **Social Schema:** Create `follows` table and add `is_public` flag to `jokes`.
+- [ ] **Follow Logic:** Implement `IFollowService` and `SupabaseFollowAdapter`.
+- [ ] **Global Feed:** Build a public discovery feed using `is_public` jokes.
+- [ ] **Following Feed:** Create a feed specifically from followed users.
+- [ ] **User Discovery:** Implement user search and profile views.
 
 ## 7. Verification & Testing Strategy
 - **Interface Mocking:** Use mocks of `core/interfaces` to test the UI and business logic independently of providers.

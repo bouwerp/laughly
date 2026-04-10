@@ -28,9 +28,15 @@ enable_signup = true
 
 [auth.external.google]
 enabled = true
-client_id = "env(GOOGLE_CLIENT_ID)"
+client_id = "600264258555-32c43sb7it6j70gp26vushju38q746je.apps.googleusercontent.com"
 secret = "env(GOOGLE_CLIENT_SECRET)"
 redirect_uri = "http://localhost:54321/auth/v1/callback"
+# Resolves "Unacceptable audience" by allowing tokens from these clients
+additional_client_ids = [
+  "600264258555-32c43sb7it6j70gp26vushju38q746je.apps.googleusercontent.com",
+  "600264258555-f9lp8g68haa9i8o9844nqas8t6p5vnc4.apps.googleusercontent.com",
+  "600264258555-6j9hm3outurhhi273bqi143b8viph62g.apps.googleusercontent.com"
+]
 
 [auth.external.apple]
 enabled = false

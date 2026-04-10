@@ -8,12 +8,14 @@ import { useAuth } from '../../hooks/useAuth';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function ShareIndex() {
   const { hasShareIntent, shareIntent, resetShareIntent, error } = useShareIntent();
   const { session, isLoading: authLoading } = useAuth();
   const queryClient = useQueryClient();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -131,8 +133,9 @@ export default function ShareIndex() {
   }
 
   return (
-    <ScrollView className="flex-1 bg-background">
-      <View className="p-6">
+    <View className="flex-1 bg-background" style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}>
+      <ScrollView className="flex-1">
+        <View className="p-6">
         <View className="flex-row items-center justify-between mb-8">
           <View>
             <Text className="text-3xl font-bold text-foreground">Save Joke</Text>
@@ -224,5 +227,6 @@ export default function ShareIndex() {
         </TouchableOpacity>
       </View>
     </ScrollView>
-  );
+  </View>
+);
 }

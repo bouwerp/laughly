@@ -4,7 +4,7 @@ ENV=$1
 
 if [ "$ENV" == "local" ]; then
   echo "🚀 Switching to LOCAL environment..."
-  cp .env.local .env
+  cp env.local .env
   
   # Optional: Automatic IP detection for Android/Physical devices
   # IP=$(ipconfig getifaddr en0) # macOS specific
@@ -12,7 +12,7 @@ if [ "$ENV" == "local" ]; then
   
 elif [ "$ENV" == "production" ]; then
   echo "🌍 Switching to PRODUCTION environment..."
-  cp .env.production .env
+  cp env.production .env
 else
   echo "❌ Error: Please specify 'local' or 'production'"
   exit 1

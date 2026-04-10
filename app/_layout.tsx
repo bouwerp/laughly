@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useShareIntent } from 'expo-share-intent';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { useColorScheme } from '@/components/useColorScheme';
 import { AuthProvider, useAuth } from '../hooks/useAuth';
@@ -33,11 +34,13 @@ const queryClient = new QueryClient();
  */
 export default function Root() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <RootLayout />
-      </AuthProvider>
-    </QueryClientProvider>
+    <SafeAreaProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <RootLayout />
+        </AuthProvider>
+      </QueryClientProvider>
+    </SafeAreaProvider>
   );
 }
 
