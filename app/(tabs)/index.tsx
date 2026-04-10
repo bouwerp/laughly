@@ -11,7 +11,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Index() {
   console.log('Index: Rendering start');
-  const { jokes, isLoading, refetch } = useJokes();
+  const { jokes, isLoading, error, refetch } = useJokes();
   const { session } = useAuth();
   console.log('Index: Session state:', !!session);
   const [searchQuery, setSearchQuery] = useState('');
@@ -53,6 +53,20 @@ export default function Index() {
     return (
       <View className="flex-1 items-center justify-center bg-background">
         <ActivityIndicator size="large" color="#ff272a" />
+        <Text className="mt-4 text-muted-foreground font-medium">Fetching your jokes...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View className="flex-1 items-center justify-center bg-background">
+        <FontAwesome name="exclamation-circle" size={48} color="#ff272a" />
+        <Text className="text-xl font-bold text-foreground mt-4 text-center px-8">Failed to load jokes</Text>
+        <Text className="text-muted-foreground text-center mt-2 font-medium px-8">{error.message || 'Something went wrong.'}</Text>
+        <TouchableOpacity className="mt-6 bg-primary px-6 py-3 rounded-full" onPress={() => refetch()}>
+          <Text className="text-white font-bold">Try Again</Text>
+        </TouchableOpacity>
       </View>
     );
   }

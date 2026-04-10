@@ -42,35 +42,43 @@ export function useJokes() {
   const { data: jokes, isLoading, error, refetch } = useQuery({
     queryKey: ['jokes', session?.user?.id],
     queryFn: async () => {
+      console.log('useJokes: Starting fetch for user', session?.user?.id);
       if (!session?.user?.id) return [];
 
-      const data = await services.databaseService.query<any>('jokes', {
-        filters: [{ column: 'user_id', value: session.user.id, operator: 'eq' }],
-        order: { column: 'created_at', ascending: false },
-      });
+      try {
+        const data = await services.databaseService.query<any>('jokes', {
+          filters: [{ column: 'user_id', value: session.user.id, operator: 'eq' }],
+          order: { column: 'created_at', ascending: false },
+        });
 
-      // Map to domain entity and resolve public URLs
-      return data.map((item) => {
-        const joke: Joke = {
-          id: item.id,
-          createdAt: item.created_at,
-          userId: item.user_id,
-          title: item.title,
-          description: item.description,
-          mediaPath: item.media_path,
-          mediaType: item.media_type,
-          tags: item.tags,
-          isFavorite: item.is_favorite,
-          metadata: item.metadata,
-        };
+        console.log('useJokes: Fetch successful, got items:', data?.length);
 
-        // If the path exists, resolve the public URL
-        if (joke.mediaPath) {
-          joke.mediaUrl = services.storageService.getPublicUrl(joke.mediaPath, 'media');
-        }
+        // Map to domain entity and resolve public URLs
+        return data.map((item) => {
+          const joke: Joke = {
+            id: item.id,
+            createdAt: item.created_at,
+            userId: item.user_id,
+            title: item.title,
+            description: item.description,
+            mediaPath: item.media_path,
+            mediaType: item.media_type,
+            tags: item.tags,
+            isFavorite: item.is_favorite,
+            metadata: item.metadata,
+          };
 
-        return joke;
-      });
+          // If the path exists, resolve the public URL
+          if (joke.mediaPath) {
+            joke.mediaUrl = services.storageService.getPublicUrl(joke.mediaPath, 'media');
+          }
+
+          return joke;
+        });
+      } catch (err) {
+        console.error('useJokes: Fetch failed with error:', err);
+        throw err;
+      }
     },
     enabled: !!session?.user?.id,
   });
